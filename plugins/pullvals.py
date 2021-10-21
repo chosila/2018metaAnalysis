@@ -46,7 +46,7 @@ def pullvals(histpair,
         
         data_norm = data_raw*1/data_raw.sum()
         varR_norm = ref_list_norm.var(axis=0)
-        sumR = ref_list_norm.sum(axis=0)
+        sumR = ref_list_raw.sum(axis=0)
         
         
     
@@ -92,11 +92,11 @@ def pull(D_norm, R_norm_avg, intD, varR_norm, sumR, nRef):
     
     out = D_norm * sumR / np.sqrt( 1 + sumR / intD )
     
-    numerator = np.divide(D_norm, R_norm_avg, where=R_norm_avg!=0) - 1
-    denom1 = np.divide(1, R_norm_avg * intD, where=R_norm_avg!=0)
-    denom2 = np.divide(varR_norm, R_norm_avg*R_norm_avg, where=R_norm_avg!=0)
-    denom3 = np.divide(1, sumR, where=sumR!=0)
-    denom4 = np.square( 0.01 + 0.01*(np.divide(D_norm, R_norm_avg, where=R_norm_avg!=0)) )
+    numerator = D_norm - R_norm_avg
+    denom1 = np.divide(R_norm_avg / intD)
+    denom2 = varR_norm
+    denom3 = np.divide(R_norm_avg*R_norm_avg, sumR, where=sumR!=0)
+    denom4 = 0.01*0.01*np.square(D_norm + R_norm_avg)
     denominator = np.sqrt( denom1 + denom2 + denom3 + denom4 )
     
     pull = np.divide( numerator, denominator, out=out, where=R_norm_avg!=0)
